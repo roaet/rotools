@@ -1,0 +1,5 @@
+PyGithub
+playsound
+GitPython
+pyyaml
+halo
