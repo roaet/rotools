@@ -92,6 +92,7 @@ def main():
 
     spinner.text = make_msg(branch, '', "looking for commit")
     while running:
+        sha = "?"
         try:
             # branch changed
             if old_branch != localRepo.active_branch.name:
@@ -138,8 +139,15 @@ def main():
                 initial = False
                 time.sleep(10)
         except GithubException as e:
-            print("github error: %s " % e)
-            running = False
+            if e.status == 404:
+                local = localRepo.active_branch.name
+                spinner.text = make_msg(
+                    "?", "?",
+                    ("%s (local) not found at remote. Waiting..." % local))
+                time.sleep(10)
+            else:
+                print("github error: %s " % e)
+                running = False
             continue
     spinner.stop()
 
