@@ -138,7 +138,7 @@ def main():
                 initial = False
                 time.sleep(10)
         except GithubException as e:
-            print("github error: " % e)
+            print("github error: %s " % e)
             running = False
             continue
     spinner.stop()
