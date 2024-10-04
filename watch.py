@@ -7,6 +7,8 @@ from github import Github
 from github import Auth
 from git import Repo
 
+import requests
+
 from halo import Halo
 from playsound import playsound
 import yaml
@@ -149,6 +151,11 @@ def main():
                 print("github error: %s " % e)
                 running = False
             continue
+        except requests.exceptions.ConnectionError as e:
+            print("connection error: %s " % e)
+            running = False
+            continue
+
     spinner.stop()
 
 if __name__ == "__main__":
