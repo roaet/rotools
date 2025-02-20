@@ -13,7 +13,7 @@ complete.
 
 ### Configure
 
-Needs a yaml file in running directory named `conf.yaml`o
+Needs a yaml file in running directory named `conf.yaml`
 
 ```yaml
 ---
