@@ -22,6 +22,7 @@ incomplete_stats = [
     'queued', 'requested', 'waiting', 'pending', 'in_progress'
 ]
 
+
 def get_workflow_data(remote, b, sha):
     ic = []
     cj = []
@@ -44,6 +45,27 @@ def load_conf():
             print(exc)
     return None
 
+
+def parse_repo_name(remote_url):
+    """Parse repository name from git remote URL.
+    Handles both SSH and HTTPS URLs.
+    """
+    if "git@github.com:" in remote_url:
+        # Handle SSH URL (git@github.com:org/repo.git)
+        repo_part = remote_url.split("git@github.com:")[1]
+    elif "github.com/" in remote_url:
+        # Handle HTTPS URL (https://github.com/org/repo.git)
+        repo_part = remote_url.split("github.com/")[1]
+    else:
+        raise ValueError(f"Unrecognized GitHub URL format: {remote_url}")
+
+    # Remove .git suffix if present
+    if repo_part.endswith(".git"):
+        repo_part = repo_part[:-4]
+
+    return repo_part.strip()
+
+
 def main():
     conf = load_conf()
     if conf is None:
@@ -60,13 +82,13 @@ def main():
         exit(1)
 
     repo = sys.argv[1]
-
     localRepo = Repo(repo)
     remote_url = localRepo.remote().url
-    repo_name = ""
-    if "git@github.com" in remote_url:
-        remote_parts = remote_url.split(":")
-        repo_name = remote_parts[1]
+    try:
+        repo_name = parse_repo_name(remote_url)
+    except ValueError as e:
+        print(f"Error parsing repository URL: {e}")
+        exit(1)
 
     g = Github(auth=auth)
 
@@ -83,6 +105,7 @@ def main():
     spinner.start()
 
     running = True
+
     def escape(sig, frame):
         spinner.stop()
         exit(0)
@@ -114,7 +137,8 @@ def main():
                     time.sleep(10)
                     continue
                 else:
-                    spinner.text = make_msg(branch, sha, 'new workflow detected')
+                    spinner.text = make_msg(
+                        branch, sha, 'new workflow detected')
             else:
                 spinner.text = make_msg(branch, sha, 'new commit detected')
             old_sha = sha
@@ -130,9 +154,10 @@ def main():
 
                 if not complete:
                     total = len(ic) + len(cj)
-                    msg = "workflows not complete: {0}/{1}".format(len(ic), total)
+                    msg = "workflows not complete: {0}/{1}".format(
+                        len(ic), total)
                     spinner.text = make_msg(branch, sha, msg)
-                else: 
+                else:
                     # if initial loop probably don't need to output anything
                     if not initial:
                         playsound(sound)
