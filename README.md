@@ -13,7 +13,7 @@ complete.
 
 ### Configure
 
-Needs a yaml file in running directory named `config.yaml`
+Needs a yaml file in running directory named `conf.yaml`
 
 ```yaml
 ---
@@ -24,6 +24,11 @@ sound: elegant-notification-sound.mp3
 ### Running
 
 `python watch.py /PATH/TO/REPO`
+
+
+### Stop the tool
+
+You can stop the tool with `ctrl+C` or `ctrl+Z` if that fails. 
 
 ### Getting token from github
 

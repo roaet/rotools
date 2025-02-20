@@ -1,0 +1,4 @@
+---
+github_token: "replace_with_your_github_token"
+sound: "elegant-notification-sound.mp3"
+# rename file to conf.yaml
